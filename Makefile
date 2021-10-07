@@ -7,31 +7,78 @@ WARN_COLOR :=\033[36;01m
 ATTN_COLOR :=\033[33;01m
 
 # Github action env variables used by build container
-GITHUB_SHA          ?= $(shell git rev-parse HEAD 2>/dev/null)
-GITHUB_WORKSPACE    := /github/workspace
+GITHUB_SHA      ?= $(shell git rev-parse HEAD 2>/dev/null)
+GITHUB_WORKSPACE:= /github/workspace
+CONTAINER		:= ghcr.io/opcr-io/policy:0.0
+ORG				:= datadude
 
 # build action input parameters
-SOURCE_PATH   := src
-TARGET_PATH   := build
-TARGET_FILE   := bundle.tar.gz
-REVISION      := $(GITHUB_SHA)
-BUILD_OPTIONS := 
-VERBOSE       := false
+INPUT_SRC		:= src
+INPUT_TAG		:= ${ORG}/test-policy:latest
+INPUT_REVISION  := ${GITHUB_SHA}
+INPUT_USERNAME	:= ${USER}
+INPUT_PASSWORD	= ${GIT_TOKEN}
+INPUT_SERVER	:= opcr.io
+INPUT_VERBOSITY	:= 0
+
+.PHONY: all
+all: clean login build push logout
+
+.PHONY: login
+login:
+	@echo -e "$(ATTN_COLOR)==> $@ $(NO_COLOR)"
+	@docker run -ti \
+	-e INPUT_USERNAME=${INPUT_USERNAME} \
+	-e INPUT_PASSWORD=${INPUT_PASSWORD} \
+	-e INPUT_SERVER=${INPUT_SERVER} \
+	-e INPUT_VERBOSITY=${INPUT_VERBOSITY} \
+	-e GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
+	-v ${PWD}:${GITHUB_WORKSPACE} \
+	--entrypoint=/app/login.sh \
+	--platform=linux/amd64 \
+	${CONTAINER}
 
 .PHONY: build
 build:
 	@echo -e "$(ATTN_COLOR)==> $@ $(NO_COLOR)"
-	@docker run \
-	-ti \
-	--rm \
-	--entrypoint "/app/build.sh" \
-	-v $(PWD):$(GITHUB_WORKSPACE) \
-	-e GITHUB_WORKSPACE=$(GITHUB_WORKSPACE) \
-	-e GITHUB_SHA=$(GITHUB_SHA) \
-	-e INPUT_SOURCE_PATH=$(SOURCE_PATH) \
-	-e INPUT_TARGET_PATH=$(TARGET_PATH) \
-	-e INPUT_TARGET_FILE=$(TARGET_FILE) \
-	-e INPUT_REVISION=$(REVISION) \
-	-e INPUT_BUILD_OPTIONS=$(BUILD_OPTIONS) \
-	-e INPUT_VERBOSE=$(VERBOSE) \
-	ghcr.io/aserto-dev/aserto-one:action-v2 > /dev/null
+	@docker run -ti \
+	-e INPUT_SRC=${INPUT_SRC} \
+	-e INPUT_TAG=${INPUT_TAG} \
+	-e INPUT_REVISION=${INPUT_REVISION} \
+	-e INPUT_SERVER=${INPUT_SERVER} \
+	-e INPUT_VERBOSITY=${INPUT_VERBOSITY} \
+	-e GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
+	-v ${PWD}:${GITHUB_WORKSPACE} \
+	--entrypoint=/app/build.sh \
+	--platform=linux/amd64 \
+	${CONTAINER}
+
+.PHONY: push
+push:
+	@echo -e "$(ATTN_COLOR)==> $@ $(NO_COLOR)"
+	@docker run -ti \
+	-e INPUT_TAG=${INPUT_TAG} \
+	-e INPUT_SERVER=${INPUT_SERVER} \
+	-e INPUT_VERBOSITY=${INPUT_VERBOSITY} \
+	-e GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
+	-v ${PWD}:${GITHUB_WORKSPACE} \
+	--entrypoint=/app/push.sh \
+	--platform=linux/amd64 \
+	${CONTAINER}
+
+.PHONY: logout
+logout:
+	@echo -e "$(ATTN_COLOR)==> $@ $(NO_COLOR)"
+	@docker run -ti \
+	-e INPUT_SERVER=${INPUT_SERVER} \
+	-e INPUT_VERBOSITY=${INPUT_VERBOSITY} \
+	-e GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
+	-v ${PWD}:${GITHUB_WORKSPACE} \
+	--entrypoint=/app/logout.sh \
+	--platform=linux/amd64 \
+	${CONTAINER}
+
+.PHONY: clean
+clean:
+	@echo -e "$(ATTN_COLOR)==> $@ $(NO_COLOR)"
+	rm -rf ${PWD}/_policy
