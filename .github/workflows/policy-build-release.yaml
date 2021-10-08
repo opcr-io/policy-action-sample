@@ -42,6 +42,7 @@ jobs:
       uses: opcr-io/policy-push-action@v1
       with:
         tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
+        verbosity: trace
 
     - name: Policy Logout
       id: policy-logout
