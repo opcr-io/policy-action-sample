@@ -34,15 +34,21 @@ jobs:
       uses: opcr-io/policy-build-action@v1
       with:
         src: src
-        tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
+        tag: build-image:${{ steps.sver.outputs.version }}
         revision: "$GITHUB_SHA"
+
+    - name: Policy Tag
+      id: policy-tag
+      uses: opcr-io/policy-tag-action@v1
+      with:
+        source-tag: build-image:${{ steps.sver.outputs.version }}
+        target-tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
 
     - name: Policy Push
       id: policy-push
       uses: opcr-io/policy-push-action@v1
       with:
         tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
-        verbosity: trace
 
     - name: Policy Logout
       id: policy-logout
