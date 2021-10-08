@@ -24,10 +24,10 @@ jobs:
       id: policy-login
       uses: opcr-io/policy-login-action@v1.0.1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        OPCR_BOT_PAT: ${{ secrets.OPCR_BOT_PAT }}
       with:
-        username: policy-bot
-        password: "$GITHUB_TOKEN"
+        username: oprc-bot
+        password: "$OPCR_BOT_PAT"
 
     - name: Policy Build
       id: policy-build
