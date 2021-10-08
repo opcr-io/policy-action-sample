@@ -33,15 +33,15 @@ jobs:
       id: policy-build
       uses: opcr-io/policy-build-action@v1.0.1
       with:
-        src: peoplefinder/src
-        tag: datadude/peoplefinder:${{ steps.sver.outputs.version }}
+        src: src
+        tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
         revision: "$GITHUB_SHA"
 
     - name: Policy Push
       id: policy-push
       uses: opcr-io/policy-push-action@v1.0.1
       with:
-        tag: datadude/peoplefinder:${{ steps.sver.outputs.version }}
+        tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
 
     - name: Policy Logout
       id: policy-logout
