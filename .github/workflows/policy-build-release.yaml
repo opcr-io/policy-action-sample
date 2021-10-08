@@ -39,7 +39,7 @@ jobs:
 
     - name: Policy Push
       id: policy-push
-      uses: opcr-io/policy-push-action@v1.0.1
+      uses: opcr-io/policy-push-action@v1.0.2
       with:
         tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
 
