@@ -27,7 +27,7 @@ jobs:
         OPCR_BOT_PAT: ${{ secrets.OPCR_BOT_PAT }}
       with:
         username: opcr-bot
-        password: "$OPCR_BOT_PAT"
+        password: ${{ env.OPCR_BOT_PAT }}
 
     - name: Policy Build
       id: policy-build
