@@ -31,7 +31,7 @@ jobs:
 
     - name: Policy Build
       id: policy-build
-      uses: opcr-io/policy-build-action@v1.0.2
+      uses: opcr-io/policy-build-action@v1
       with:
         src: src
         tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
