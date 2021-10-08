@@ -1,5 +1,3 @@
-# policy-template
+# policy-action-sample
 
-Repository template for Aserto policy repos.
-
-
+Sample CI using policy Github actions
