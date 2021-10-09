@@ -42,8 +42,8 @@ jobs:
       id: policy-tag
       uses: opcr-io/policy-tag-action@v1
       with:
-        source-tag: build-image:${{ steps.sver.outputs.version }}
-        target-tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
+        source_tag: build-image:${{ steps.sver.outputs.version }}
+        target_tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
 
     - name: Policy Push
       id: policy-push
