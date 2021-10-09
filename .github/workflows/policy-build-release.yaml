@@ -64,19 +64,19 @@ jobs:
 
     - name: Create out directory
       run: |
-        mkdir -p /out
-        ls -ali /
+        mkdir -p $GITHUB_WORKSPACE/out
+        ls -ali $GITHUB_WORKSPACE
 
     - name: Policy Save
       id: policy-save
       uses: opcr-io/policy-save-action@v1
       with:
         tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
-        file: /out/bundle.tar.gz
+        file: $GITHUB_WORKSPACE/out/bundle.tar.gz
 
     - name: Dump bundle
       run: |
-        tar -tvf /out/bundle.tar.gz
+        tar -tvf $GITHUB_WORKSPACE/out/bundle.tar.gz
 
     - name: Policy Logout
       id: policy-logout
