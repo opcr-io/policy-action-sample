@@ -62,16 +62,21 @@ jobs:
       with:
         tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
 
+    - name: Create out directory
+      run: |
+        mkdir -p /out
+        ls -ali /
+
     - name: Policy Save
       id: policy-save
       uses: opcr-io/policy-save-action@v1
       with:
         tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
-        file: /bundle.tar.gz
+        file: /out/bundle.tar.gz
 
     - name: Dump bundle
       run: |
-        tar -tvf /bundle.tar.gz
+        tar -tvf /out/bundle.tar.gz
 
     - name: Policy Logout
       id: policy-logout
