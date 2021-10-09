@@ -36,7 +36,6 @@ jobs:
         src: src
         tag: build-image:${{ steps.sver.outputs.version }}
         revision: "$GITHUB_SHA"
-        verbosity: info
 
     - name: Policy Tag
       id: policy-tag
@@ -50,33 +49,29 @@ jobs:
       uses: opcr-io/policy-push-action@v1
       with:
         tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
-        verbosity: info
 
     - name: Policy Remove
       id: policy-rm
       uses: opcr-io/policy-rm-action@v1
       with:
         tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
-        verbosity: info
 
     - name: Policy Pull
       id: policy-pull
       uses: opcr-io/policy-pull-action@v1
       with:
         tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
-        verbosity: info
 
     - name: Policy Save
       id: policy-save
       uses: opcr-io/policy-save-action@v1
       with:
         tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
-        file: out/bundle.tar.gz
-        verbosity: info
+        file: /bundle.tar.gz
 
     - name: Dump bundle
       run: |
-        tar -tvf out/bundle.tar.gz
+        tar -tvf /bundle.tar.gz
 
     - name: Policy Logout
       id: policy-logout
