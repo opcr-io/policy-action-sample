@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     name: build
     steps:
-    
+
     - uses: actions/checkout@v2
-    
+
     - uses: aserto-dev/sver-action@v0.0.14
       name: Calculate Tag
       id: "sver"
@@ -31,7 +31,7 @@ jobs:
 
     - name: Policy Build
       id: policy-build
-      uses: opcr-io/policy-build-action@v1
+      uses: opcr-io/policy-build-action@v2
       with:
         src: src
         tag: build-image:${{ steps.sver.outputs.version }}
@@ -39,26 +39,26 @@ jobs:
 
     - name: Policy Tag
       id: policy-tag
-      uses: opcr-io/policy-tag-action@v1
+      uses: opcr-io/policy-tag-action@v2
       with:
         source_tag: build-image:${{ steps.sver.outputs.version }}
-        target_tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
+        target_tags: policy-test/policy-test:${{ steps.sver.outputs.version }}
 
     - name: Policy Push
       id: policy-push
-      uses: opcr-io/policy-push-action@v1
+      uses: opcr-io/policy-push-action@v2
       with:
-        tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
+        tags: policy-test/policy-test:${{ steps.sver.outputs.version }}
 
     - name: Policy Remove
       id: policy-rm
-      uses: opcr-io/policy-rm-action@v1
+      uses: opcr-io/policy-rm-action@v2
       with:
         tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
 
     - name: Policy Pull
       id: policy-pull
-      uses: opcr-io/policy-pull-action@v1
+      uses: opcr-io/policy-pull-action@v2
       with:
         tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
 
@@ -69,7 +69,7 @@ jobs:
 
     - name: Policy Save
       id: policy-save
-      uses: opcr-io/policy-save-action@v1
+      uses: opcr-io/policy-save-action@v2
       with:
         tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
         file: $GITHUB_WORKSPACE/out/bundle.tar.gz
@@ -80,4 +80,4 @@ jobs:
 
     - name: Policy Logout
       id: policy-logout
-      uses: opcr-io/policy-logout-action@v1
+      uses: opcr-io/policy-logout-action@v2

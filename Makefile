@@ -9,7 +9,7 @@ ATTN_COLOR :=\033[33;01m
 # Github action env variables used by build container
 GITHUB_SHA      ?= $(shell git rev-parse HEAD 2>/dev/null)
 GITHUB_WORKSPACE:= /github/workspace
-CONTAINER		:= ghcr.io/opcr-io/policy:0.0
+CONTAINER		:= ghcr.io/opcr-io/policy:0.1
 ORG				:= datadude
 
 # build action input parameters
@@ -56,7 +56,7 @@ build:
 push:
 	@echo -e "$(ATTN_COLOR)==> $@ $(NO_COLOR)"
 	@docker run -ti \
-	-e INPUT_TAG=${INPUT_TAG} \
+	-e INPUT_TAGS=${INPUT_TAG} \
 	-e INPUT_VERBOSITY=${INPUT_VERBOSITY} \
 	-e GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
 	-v ${PWD}:${GITHUB_WORKSPACE} \
