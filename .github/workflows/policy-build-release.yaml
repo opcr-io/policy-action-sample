@@ -31,7 +31,7 @@ jobs:
     -
       name: Calc Tags
       id: meta
-      uses: docker/metadata-action@v6
+      uses: docker/metadata-action@v4
       with:
         images: |
           {{`${{ steps.config.outputs.server }}/${{ steps.config.outputs.repo }}`}}
