@@ -41,49 +41,56 @@ jobs:
           type=semver,pattern={{`{{version}}`}}
           type=semver,pattern={{`{{major}}.{{minor}}`}}
           type=semver,pattern={{`{{major}}`}}
-          # type=sha
     - 
       name: Policy Login
       id: policy-login
       uses: opcr-io/policy-login-action@v4
       env:
-        OPCR_BOT_PAT: ${{ secrets.OPCR_BOT_PAT }}
+        POLICY_PUSH_KEY: ${{ secrets.OPCR_BOT_PAT }}
       with:
-        username: opcr-bot
-        password: ${{ env.OPCR_BOT_PAT }}
+        server: steps.config.outputs.server
+        username: steps.config.outputs.username
+        password: ${{ env.POLICY_PUSH_KEY }}
     - 
       name: Policy Build
       id: policy-build
       uses: opcr-io/policy-build-action@v4
       with:
         src: src
-        tag: build-image:${{ steps.sver.outputs.version }}
+        tag: ${{ steps.config.outputs.repo }}
         revision: "$GITHUB_SHA"
+        rego_version: "rego.v1"
+      env:
+        POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
     - 
       name: Policy Tag
       id: policy-tag
       uses: opcr-io/policy-tag-action@v4
       with:
-        source_tag: build-image:${{ steps.sver.outputs.version }}
-        target_tags: policy-test/policy-test:${{ steps.sver.outputs.version }}
+        source_tag: ${{ steps.config.outputs.repo }}
+        target_tags: ${{ steps.meta.outputs.target_tags }}
+      env:
+        POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
     - 
       name: Policy Push
       id: policy-push
       uses: opcr-io/policy-push-action@v3
       with:
-        tags: policy-test/policy-test:${{ steps.sver.outputs.version }}
+        tags: ${{ steps.meta.outputs.target_tags }}
+      env:
+        POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
     - 
       name: Policy Remove
       id: policy-rm
       uses: opcr-io/policy-rm-action@v4
       with:
-        tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
+        tag: policy-test/policy-test:${{ steps.meta.outputs.target_tags }}
     - 
       name: Policy Pull
       id: policy-pull
       uses: opcr-io/policy-pull-action@v4
       with:
-        tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
+        tag: policy-test/policy-test:${{ steps.meta.outputs.target_tags }}
     - 
       name: Create out directory
       run: |
@@ -94,7 +101,7 @@ jobs:
       id: policy-save
       uses: opcr-io/policy-save-action@v4
       with:
-        tag: policy-test/policy-test:${{ steps.sver.outputs.version }}
+        tag: policy-test/policy-test:${{ steps.meta.outputs.target_tags }}
         file: $GITHUB_WORKSPACE/out/bundle.tar.gz
     - 
       name: Dump bundle
