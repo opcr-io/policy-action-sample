@@ -45,12 +45,10 @@ jobs:
       name: Policy Login
       id: policy-login
       uses: opcr-io/policy-login-action@v4
-      env:
-        POLICY_PUSH_KEY: ${{ secrets.OPCR_BOT_PAT }}
       with:
         server: steps.config.outputs.server
         username: steps.config.outputs.username
-        password: ${{ env.POLICY_PUSH_KEY }}
+        password: ${{ secrets.POLICY_PUSH_KEY }}
     - 
       name: Policy Build
       id: policy-build
