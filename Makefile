@@ -7,19 +7,19 @@ WARN_COLOR :=\033[36;01m
 ATTN_COLOR :=\033[33;01m
 
 # Github action env variables used by build container
-GITHUB_SHA      ?= $(shell git rev-parse HEAD 2>/dev/null)
-GITHUB_WORKSPACE:= /github/workspace
-CONTAINER		:= ghcr.io/opcr-io/policy:0.1
-ORG				:= datadude
+GITHUB_SHA       ?= $(shell git rev-parse HEAD 2>/dev/null)
+GITHUB_WORKSPACE := /github/workspace
+CONTAINER.       := ghcr.io/opcr-io/policy:0.4
+ORG.             := opcr-io
 
 # build action input parameters
-INPUT_SRC		:= src
-INPUT_TAG		:= ${ORG}/test-policy:latest
-INPUT_REVISION  := ${GITHUB_SHA}
-INPUT_USERNAME	:= ${USER}
-INPUT_PASSWORD	= ${GIT_TOKEN}
-INPUT_SERVER	:= opcr.io
-INPUT_VERBOSITY	:= error
+INPUT_SRC        := src
+INPUT_TAG        := ${ORG}/test-policy:latest
+INPUT_REVISION.  := ${GITHUB_SHA}
+INPUT_USERNAME.  := ${USER}
+INPUT_PASSWORD.  := ${GIT_TOKEN}
+INPUT_SERVER.    := opcr.io
+INPUT_VERBOSITY. := error
 
 .PHONY: all
 all: clean login build push logout
